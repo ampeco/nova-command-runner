@@ -36,8 +36,8 @@ class CommandDto
         $variables = $request->input('command.variables');
         if (is_array($variables)) {
             foreach ($variables as $variable) {
-                if (isset($variable['label'], $variable['value'])) {
-                    $value = $variable['value'];
+                if (isset($variable['label']) && array_key_exists('value', $variable)) {
+                    $value = $variable['value'] ?? '';
                     if (!empty($value) && (str_contains($value, '"') || str_contains($value, ' '))) {
                         $value = '"' . str_replace('"', '\"', $value) . '"';
                     }

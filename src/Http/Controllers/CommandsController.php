@@ -59,11 +59,19 @@ class CommandsController
 
                 if (isset($command['variables']) && is_array($command['variables'])) {
                     foreach ($command['variables'] as $variable) {
+                        $options = $variable['options'] ?? [];
+
+                        if (isset($variable['options_provider']) && is_callable($variable['options_provider'])) {
+                            $options = call_user_func($variable['options_provider']);
+                        }
+
                         $parsed['variables'][$variable['label']] = [
                             'label' => $variable['label'],
                             'field' => $variable['field'] ?? 'text',
                             'value' => '',
-                            'options' => $variable['options'] ?? [],
+                            'options' => $options,
+                            'required' => $variable['required'] ?? true,
+                            'add_empty_option' => $variable['add_empty_option'] ?? true,
                             'placeholder' => $variable['placeholder'] ?? $variable['label'],
                         ];
                     }

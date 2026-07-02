@@ -241,7 +241,18 @@
                             v-if="variable.field === 'select'"
                             v-model="variable.value"
                         >
-                            <option v-for="option in variable.options">
+                            <option
+                                v-if="variable.add_empty_option !== false"
+                                value=""
+                            ></option>
+                            <option
+                                v-for="(option, optionValue) in variable.options"
+                                :value="
+                                    Array.isArray(variable.options)
+                                        ? option
+                                        : optionValue
+                                "
+                            >
                                 {{ option }}
                             </option>
                         </select>
@@ -414,6 +425,10 @@ function runCommand() {
 
     if (runningCommand.value.variables) {
         Object.keys(runningCommand.value.variables).forEach((variable) => {
+            if (runningCommand.value.variables[variable].required === false) {
+                return;
+            }
+
             if (
                 runningCommand.value.variables[variable].value == null ||
                 runningCommand.value.variables[variable].value.length === 0
